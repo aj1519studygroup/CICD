@@ -39,10 +39,21 @@ jobs:
       - name: Scan Docker image with Trivy
         run: trivy image --severity HIGH,CRITICAL ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
 
-      - name: Scan Docker image with Trivy
+      - name: Download Trivy HTML template
+        run: |
+          mkdir -p trivy-templates
+          curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o trivy-templates/html.tpl
+
+      - name: Scan Docker image with Trivy (HTML report)
         run: |
           trivy image --severity HIGH,CRITICAL \
-          --format template \
-          --template "@contrib/html.tpl" \
-          -o trivy-report.html \
-          ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
+            --format template \
+            --template "@trivy-templates/html.tpl" \
+            -o trivy-report.html \
+            ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
+
+      - name: Upload Trivy HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.html

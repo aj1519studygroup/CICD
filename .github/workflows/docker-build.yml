@@ -38,3 +38,11 @@ jobs:
 
       - name: Scan Docker image with Trivy
         run: trivy image --severity HIGH,CRITICAL ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
+
+      - name: Scan Docker image with Trivy
+        run: |
+          trivy image --severity HIGH,CRITICAL \
+          --format template \
+          --template "@contrib/html.tpl" \
+          -o trivy-report.html \
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest

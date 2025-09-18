@@ -64,10 +64,6 @@ jobs:
             jq '.' sonar-report.json >> sonar-report.html
             echo "</pre></body></html>" >> sonar-report.html
 
-        - name: Convert JSON → PDF (optional)
-          run: |
-            pandoc sonar-report.json -o sonar-report.pdf
-
         - name: Upload Reports
           uses: actions/upload-artifact@v4
           with:

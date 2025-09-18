@@ -1,7 +1,7 @@
 name: Build, Push Docker & SonarQube Scan
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   build:

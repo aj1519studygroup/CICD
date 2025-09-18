@@ -34,4 +34,4 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
       - name: Scan Docker image with Trivy
-        run: trivy image --severity HIGH,CRITICAL ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
+        run: trivy image --severity HIGH,CRITICAL ghcr.io/aj1519studygroup/cicd:latest

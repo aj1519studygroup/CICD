@@ -23,15 +23,15 @@ jobs:
         run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
 
   trivy-scan:
-  name: Trivy Image Scan
-  runs-on: ubuntu-latest
-  needs: build
-  steps:
-    - name: Install Trivy
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y wget curl
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+    name: Trivy Image Scan
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Install Trivy
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y wget curl
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
-    - name: Scan Docker image with Trivy
-      run: trivy image --severity HIGH,CRITICAL ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest
+      - name: Scan Docker image with Trivy
+        run: trivy image --severity HIGH,CRITICAL ghcr.io/${{ secrets.GHCR_USERNAME }}/cicd:latest

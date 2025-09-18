@@ -38,3 +38,41 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  
+  sonar-report:
+      name: Generate Sonar Report
+      runs-on: ubuntu-latest
+      needs: sonar-scan
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Install jq & pandoc
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y jq pandoc
+
+        - name: Fetch SonarCloud issues (JSON)
+          run: |
+            curl -s -u ${{ secrets.SONAR_TOKEN }}: \
+            "https://sonarcloud.io/api/issues/search?componentKeys=${{ secrets.SONAR_PROJECT_KEY }}" \
+            -o sonar-report.json
+
+        - name: Convert JSON → HTML
+          run: |
+            echo "<html><body><h1>SonarCloud Report</h1><pre>" > sonar-report.html
+            jq '.' sonar-report.json >> sonar-report.html
+            echo "</pre></body></html>" >> sonar-report.html
+
+        - name: Convert JSON → PDF (optional)
+          run: |
+            pandoc sonar-report.json -o sonar-report.pdf
+
+        - name: Upload Reports
+          uses: actions/upload-artifact@v4
+          with:
+            name: sonar-reports
+            path: |
+              sonar-report.json
+              sonar-report.html
+              sonar-report.pdf
